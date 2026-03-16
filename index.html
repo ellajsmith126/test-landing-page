@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ImageForge — Amazon Listing Images That Sell</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              50:  '#fff7ed',
+              100: '#ffedd5',
+              200: '#fed7aa',
+              300: '#fdba74',
+              400: '#fb923c',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+              800: '#9a3412',
+              900: '#7c2d12',
+            },
+            dark: {
+              900: '#0a0a0f',
+              800: '#12121a',
+              700: '#1a1a26',
+              600: '#22223a',
+              500: '#2e2e4a',
+            }
+          },
+          animation: {
+            'fade-up':     'fadeUp 0.7s ease forwards',
+            'fade-in':     'fadeIn 0.6s ease forwards',
+            'float':       'float 6s ease-in-out infinite',
+            'float-slow':  'float 9s ease-in-out infinite',
+            'pulse-glow':  'pulseGlow 3s ease-in-out infinite',
+            'slide-right': 'slideRight 0.5s ease forwards',
+            'counter':     'counter 2s ease forwards',
+            'shimmer':     'shimmer 2.5s linear infinite',
+            'spin-slow':   'spin 20s linear infinite',
+            'bounce-x':    'bounceX 2s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeUp:     { '0%': { opacity: 0, transform: 'translateY(30px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+            fadeIn:     { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+            float:      { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-18px)' } },
+            pulseGlow:  { '0%,100%': { boxShadow: '0 0 20px rgba(249,115,22,0.3)' }, '50%': { boxShadow: '0 0 50px rgba(249,115,22,0.7), 0 0 100px rgba(249,115,22,0.3)' } },
+            slideRight: { '0%': { opacity: 0, transform: 'translateX(-20px)' }, '100%': { opacity: 1, transform: 'translateX(0)' } },
+            shimmer:    { '0%': { backgroundPosition: '-200% center' }, '100%': { backgroundPosition: '200% center' } },
+            bounceX:    { '0%,100%': { transform: 'translateX(0)' }, '50%': { transform: 'translateX(6px)' } },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: #f8fafc; overflow-x: hidden; }
+
+    /* Gradient mesh background */
+    .bg-mesh {
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(249,115,22,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 80%, rgba(234,88,12,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(124,45,18,0.06) 0%, transparent 70%),
+        #0a0a0f;
+    }
+
+    /* Animated gradient text */
+    .gradient-text {
+      background: linear-gradient(135deg, #fb923c 0%, #f97316 30%, #fbbf24 60%, #fb923c 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+    }
+
+    /* Glass card */
+    .glass {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .glass-orange {
+      background: rgba(249,115,22,0.06);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(249,115,22,0.2);
+    }
+
+    /* Glow button */
+    .btn-glow {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #ea580c, #f97316, #fb923c);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-glow:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 0 30px rgba(249,115,22,0.6), 0 10px 40px rgba(249,115,22,0.25); }
+    .btn-glow::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%); background-size: 200% 100%; animation: shimmer 2s linear infinite; }
+
+    /* Scroll reveal */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left { opacity: 0; transform: translateX(-28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* Stagger */
+    .stagger-1 { transition-delay: 0.1s; }
+    .stagger-2 { transition-delay: 0.2s; }
+    .stagger-3 { transition-delay: 0.3s; }
+    .stagger-4 { transition-delay: 0.4s; }
+    .stagger-5 { transition-delay: 0.5s; }
+    .stagger-6 { transition-delay: 0.6s; }
+
+    /* Noise texture overlay */
+    .noise::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* Orb */
+    .orb {
+      border-radius: 50%;
+      filter: blur(80px);
+      position: absolute;
+      pointer-events: none;
+    }
+
+    /* Grid lines */
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(249,115,22,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(249,115,22,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* Feature card hover */
+    .feature-card { transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
+    .feature-card:hover { transform: translateY(-6px); border-color: rgba(249,115,22,0.4); box-shadow: 0 20px 60px rgba(249,115,22,0.12); }
+
+    /* Pricing card */
+    .price-popular {
+      background: linear-gradient(135deg, rgba(249,115,22,0.12), rgba(234,88,12,0.08));
+      border-color: rgba(249,115,22,0.5) !important;
+      box-shadow: 0 0 60px rgba(249,115,22,0.15);
+    }
+
+    /* Ticker */
+    .ticker-wrap { overflow: hidden; }
+    .ticker { display: flex; animation: ticker 25s linear infinite; white-space: nowrap; }
+    .ticker:hover { animation-play-state: paused; }
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* Nav */
+    nav { backdrop-filter: blur(20px); background: rgba(10,10,15,0.8); border-bottom: 1px solid rgba(255,255,255,0.06); }
+
+    /* Image mock */
+    .img-mock { border-radius: 12px; overflow: hidden; position: relative; }
+    .img-mock::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(249,115,22,0.15) 0%, transparent 50%); pointer-events: none; }
+
+    /* Number counter */
+    .counter-num { font-variant-numeric: tabular-nums; }
+
+    /* Screenshot grid shimmer */
+    .screenshot-card { transition: transform 0.4s ease, box-shadow 0.4s ease; }
+    .screenshot-card:hover { transform: scale(1.03) translateY(-4px); box-shadow: 0 30px 80px rgba(0,0,0,0.6); }
+
+    /* Tooltip */
+    .badge-pill { font-size: 0.65rem; letter-spacing: 0.08em; }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0f; }
+    ::-webkit-scrollbar-thumb { background: rgba(249,115,22,0.4); border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-mesh noise antialiased">
+
+  <!-- ═══════════════════════════════════ NAV ═══════════════════════════════════ -->
+  <nav class="fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <!-- Logo mark -->
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center shadow-lg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="2" width="9" height="9" rx="2" fill="white" opacity="0.9"/>
+            <rect x="13" y="2" width="9" height="9" rx="2" fill="white" opacity="0.6"/>
+            <rect x="2" y="13" width="9" height="9" rx="2" fill="white" opacity="0.6"/>
+            <rect x="13" y="13" width="9" height="9" rx="2" fill="white" opacity="0.9"/>
+          </svg>
+        </div>
+        <span class="font-bold text-lg tracking-tight">ImageForge<span class="text-brand-500">.</span></span>
+      </div>
+      <div class="hidden md:flex items-center gap-8 text-sm text-slate-400">
+        <a href="#features" class="hover:text-white transition-colors">Features</a>
+        <a href="#how-it-works" class="hover:text-white transition-colors">How It Works</a>
+        <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+        <a href="#testimonials" class="hover:text-white transition-colors">Reviews</a>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="#" class="text-sm text-slate-400 hover:text-white transition-colors hidden sm:block">Sign In</a>
+        <a href="#pricing" class="btn-glow text-white text-sm font-semibold px-5 py-2.5 rounded-xl">
+          Start Free Trial
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════ HERO ═══════════════════════════════════ -->
+  <section class="relative min-h-screen grid-bg flex flex-col items-center justify-center pt-24 pb-16 px-6 overflow-hidden">
+
+    <!-- Background orbs -->
+    <div class="orb w-96 h-96 bg-brand-500 opacity-10 -top-20 -left-20 animate-float-slow"></div>
+    <div class="orb w-80 h-80 bg-brand-700 opacity-8 top-1/2 -right-24 animate-float" style="animation-delay:-3s"></div>
+    <div class="orb w-64 h-64 bg-brand-400 opacity-6 bottom-10 left-1/3 animate-float-slow" style="animation-delay:-5s"></div>
+
+    <!-- Badge -->
+    <div class="reveal mb-6">
+      <div class="inline-flex items-center gap-2 glass-orange rounded-full px-4 py-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse"></span>
+        <span class="text-brand-300 text-xs font-medium badge-pill uppercase tracking-widest">Trusted by 4,200+ Amazon Sellers</span>
+      </div>
+    </div>
+
+    <!-- Headline -->
+    <h1 class="reveal stagger-1 text-center font-black leading-none tracking-tight max-w-5xl">
+      <span class="block text-5xl sm:text-6xl lg:text-8xl text-white mb-3">Your Amazon Images</span>
+      <span class="block text-5xl sm:text-6xl lg:text-8xl gradient-text">Should Be Selling.</span>
+    </h1>
+
+    <!-- Sub -->
+    <p class="reveal stagger-2 mt-6 text-center text-slate-400 text-lg sm:text-xl max-w-2xl leading-relaxed">
+      ImageForge is the <strong class="text-white font-semibold">AI-powered image server</strong> built for Amazon sellers. Render studio-quality product photos, infographics &amp; A+ content that convert browsers into buyers.
+    </p>
+
+    <!-- CTAs -->
+    <div class="reveal stagger-3 mt-10 flex flex-col sm:flex-row items-center gap-4">
+      <a href="#pricing" class="btn-glow text-white font-bold text-base px-8 py-4 rounded-2xl flex items-center gap-2 shadow-2xl">
+        Start For Free
+        <svg class="w-4 h-4 animate-bounce-x" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        </svg>
+      </a>
+      <a href="#how-it-works" class="glass text-white font-semibold text-base px-8 py-4 rounded-2xl flex items-center gap-2 hover:border-white/20 transition-colors">
+        <svg class="w-5 h-5 text-brand-400" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        See How It Works
+      </a>
+    </div>
+
+    <!-- Social proof pills -->
+    <div class="reveal stagger-4 mt-8 flex flex-wrap justify-center gap-3 text-xs text-slate-500">
+      <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>No credit card required</span>
+      <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>7-day free trial</span>
+      <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Cancel anytime</span>
+    </div>
+
+    <!-- Hero mockup -->
+    <div class="reveal stagger-5 mt-16 w-full max-w-5xl relative">
+      <!-- Glow behind -->
+      <div class="absolute inset-0 bg-gradient-to-t from-brand-500/20 via-transparent to-transparent rounded-3xl blur-2xl -z-10"></div>
+
+      <!-- Dashboard mockup -->
+      <div class="glass rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
+        <!-- Toolbar -->
+        <div class="bg-dark-800/80 px-5 py-3 flex items-center gap-3 border-b border-white/5">
+          <div class="flex gap-1.5">
+            <div class="w-3 h-3 rounded-full bg-red-500/70"></div>
+            <div class="w-3 h-3 rounded-full bg-yellow-500/70"></div>
+            <div class="w-3 h-3 rounded-full bg-green-500/70"></div>
+          </div>
+          <div class="flex-1 max-w-sm mx-auto">
+            <div class="glass rounded-md px-3 py-1 text-xs text-slate-500 text-center">app.imageforge.io/dashboard</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-xs font-bold text-white">J</div>
+          </div>
+        </div>
+
+        <!-- Dashboard content grid -->
+        <div class="p-5 bg-dark-800/40">
+          <div class="grid grid-cols-4 gap-3 mb-4">
+            <!-- Stat cards -->
+            <div class="glass rounded-xl p-3 col-span-1">
+              <p class="text-slate-500 text-xs mb-1">Images Served</p>
+              <p class="text-white font-bold text-xl counter-num" data-target="247819">0</p>
+              <p class="text-green-400 text-xs mt-1">↑ 23% this week</p>
+            </div>
+            <div class="glass rounded-xl p-3 col-span-1">
+              <p class="text-slate-500 text-xs mb-1">Avg. CTR Lift</p>
+              <p class="text-white font-bold text-xl counter-num" data-target="34">0<span>%</span></p>
+              <p class="text-green-400 text-xs mt-1">↑ vs. baseline</p>
+            </div>
+            <div class="glass rounded-xl p-3 col-span-1">
+              <p class="text-slate-500 text-xs mb-1">Active Listings</p>
+              <p class="text-white font-bold text-xl counter-num" data-target="128">0</p>
+              <p class="text-brand-400 text-xs mt-1">12 rendering now</p>
+            </div>
+            <div class="glass rounded-xl p-3 col-span-1">
+              <p class="text-slate-500 text-xs mb-1">Revenue Lift</p>
+              <p class="text-white font-bold text-xl"><span>$</span><span class="counter-num" data-target="18240">0</span></p>
+              <p class="text-green-400 text-xs mt-1">↑ this month</p>
+            </div>
+          </div>
+
+          <!-- Image grid preview -->
+          <div class="grid grid-cols-3 gap-3">
+            <!-- Image slot 1 -->
+            <div class="screenshot-card glass rounded-xl overflow-hidden aspect-square relative">
+              <div class="absolute inset-0 bg-gradient-to-br from-brand-500/20 to-purple-600/20 flex items-center justify-center">
+                <svg class="w-10 h-10 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <rect x="3" y="3" width="18" height="18" rx="3"/>
+                  <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 15l-5-5L5 21"/>
+                </svg>
+              </div>
+              <div class="absolute bottom-2 left-2 right-2">
+                <div class="glass rounded-lg px-2 py-1.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-white text-xs font-medium">Main Image</span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                  </div>
+                  <div class="mt-1 bg-white/10 rounded-full h-1">
+                    <div class="bg-brand-400 h-1 rounded-full w-full animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Image slot 2 – active rendering indicator -->
+            <div class="screenshot-card glass rounded-xl overflow-hidden aspect-square relative animate-pulse-glow">
+              <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-600/20 flex items-center justify-center">
+                <div class="text-center">
+                  <svg class="w-8 h-8 text-blue-300 mx-auto animate-spin-slow" fill="none" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+                    <path d="M12 2a10 10 0 0110 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                  </svg>
+                  <p class="text-white/50 text-xs mt-2">Rendering…</p>
+                </div>
+              </div>
+              <div class="absolute top-2 right-2">
+                <div class="glass-orange rounded-full px-2 py-0.5 text-brand-300 text-xs">AI Active</div>
+              </div>
+            </div>
+
+            <!-- Image slot 3 -->
+            <div class="screenshot-card glass rounded-xl overflow-hidden aspect-square relative">
+              <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-teal-600/20 flex items-center justify-center">
+                <svg class="w-10 h-10 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <rect x="3" y="3" width="18" height="18" rx="3"/>
+                  <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" stroke="none"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 15l-5-5L5 21"/>
+                </svg>
+              </div>
+              <div class="absolute bottom-2 left-2 right-2">
+                <div class="glass rounded-lg px-2 py-1.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-white text-xs font-medium">Infographic B</span>
+                    <span class="text-green-400 text-xs">✓ Live</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════ TICKER ═══════════════════════════════════ -->
+  <div class="py-5 border-y border-white/5 bg-dark-800/30 overflow-hidden">
+    <div class="ticker">
+      <div class="flex items-center gap-12 pr-12 text-sm text-slate-500 font-medium">
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> Amazon FBA Sellers</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> Private Label Brands</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> Agency Partners</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> 4.9★ on Trustpilot</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> SOC 2 Compliant</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> 99.99% Uptime SLA</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> CDN-Powered Delivery</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> Amazon TOS Compliant</span>
+      </div>
+      <!-- Duplicate for infinite loop -->
+      <div class="flex items-center gap-12 pr-12 text-sm text-slate-500 font-medium" aria-hidden="true">
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> Amazon FBA Sellers</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> Private Label Brands</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> Agency Partners</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> 4.9★ on Trustpilot</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> SOC 2 Compliant</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> 99.99% Uptime SLA</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> CDN-Powered Delivery</span>
+        <span class="flex items-center gap-2"><span class="text-brand-400">✦</span> Amazon TOS Compliant</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ STATS ═══════════════════════════════════ -->
+  <section class="py-20 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="reveal text-center">
+          <p class="text-4xl sm:text-5xl font-black gradient-text counter-num" data-target="4200" data-suffix="+">0+</p>
+          <p class="text-slate-400 text-sm mt-2">Active Sellers</p>
+        </div>
+        <div class="reveal stagger-1 text-center">
+          <p class="text-4xl sm:text-5xl font-black gradient-text counter-num" data-target="34" data-suffix="%">0%</p>
+          <p class="text-slate-400 text-sm mt-2">Avg CTR Increase</p>
+        </div>
+        <div class="reveal stagger-2 text-center">
+          <p class="text-4xl sm:text-5xl font-black gradient-text counter-num" data-target="12" data-suffix="M+">0M+</p>
+          <p class="text-slate-400 text-sm mt-2">Images Served</p>
+        </div>
+        <div class="reveal stagger-3 text-center">
+          <p class="text-4xl sm:text-5xl font-black gradient-text counter-num" data-target="4.9" data-suffix="★" data-decimal="true">0★</p>
+          <p class="text-slate-400 text-sm mt-2">Trustpilot Score</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════ FEATURES ═══════════════════════════════════ -->
+  <section id="features" class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="reveal inline-flex items-center gap-2 glass-orange rounded-full px-4 py-2 mb-5">
+          <span class="text-brand-300 text-xs font-medium badge-pill uppercase tracking-widest">Everything You Need</span>
+        </div>
+        <h2 class="reveal stagger-1 text-4xl sm:text-5xl font-black text-white">The Full Stack for</h2>
+        <h2 class="reveal stagger-2 text-4xl sm:text-5xl font-black gradient-text">Amazon Image Excellence</h2>
+        <p class="reveal stagger-3 mt-4 text-slate-400 text-lg max-w-xl mx-auto">Every tool a top seller needs to dominate their category visually — all in one platform.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+        <!-- Feature 1 -->
+        <div class="reveal feature-card glass rounded-2xl p-6 border border-white/5">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500/20 to-brand-600/20 border border-brand-500/20 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/>
+            </svg>
+          </div>
+          <h3 class="text-white font-semibold text-lg mb-2">AI Image Generation</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Generate studio-quality product images, lifestyle shots, and infographics from a single prompt. No photographer needed.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="glass-orange rounded-full px-2.5 py-1 text-brand-300 text-xs">Stable Diffusion</span>
+            <span class="glass rounded-full px-2.5 py-1 text-slate-400 text-xs">Background Removal</span>
+          </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="reveal stagger-1 feature-card glass rounded-2xl p-6 border border-white/5">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-600/20 border border-blue-500/20 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
+            </svg>
+          </div>
+          <h3 class="text-white font-semibold text-lg mb-2">Global CDN Delivery</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Serve images from 200+ edge nodes worldwide. Sub-50ms load times mean Amazon ranks your listing higher and buyers stay engaged.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="glass rounded-full px-2.5 py-1 text-slate-400 text-xs">200+ Edge Nodes</span>
+            <span class="glass rounded-full px-2.5 py-1 text-slate-400 text-xs">&lt;50ms P99</span>
+          </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="reveal stagger-2 feature-card glass rounded-2xl p-6 border border-white/5">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-600/20 border border-emerald-500/20 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/>
+            </svg>
+          </div>
+          <h3 class="text-white font-semibold text-lg mb-2">Conversion Analytics</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Track exactly which images drive clicks, sessions, and purchases. A/B test variants automatically and let data pick winners.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="glass rounded-full px-2.5 py-1 text-slate-400 text-xs">A/B Testing</span>
+            <span class="glass rounded-full px-2.5 py-1 text-slate-400 text-xs">Heatmaps</span>
+          </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="reveal stagger-3 feature-card glass rounded-2xl p-6 border border-white/5">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-violet-600/20 border border-purple-500/20 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"/>
+            </svg>
+          </div>
+          <h3 class="text-white font-semibold text-lg mb-2">Automated Infographics</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Pull product specs directly from your listing and auto-generate compliant infographic stacks. 7-image packs in under 2 minutes.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="glass rounded-full px-2.5 py-1 text-slate-400 text-xs">Auto-layout</span>
+            <span class="glass rounded-full px-2.5 py-1 text-slate-400 text-xs">Brand Kits</span>
+          </div>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="reveal stagger-4 feature-card glass rounded-2xl p-6 border border-white/5">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500/20 to-pink-600/20 border border-rose-500/20 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z"/>
+            </svg>
+          </div>
+          <h3 class="text-white font-semibold text-lg mb-2">Bulk Processing</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Upload 500 SKUs at once. ImageForge processes, optimises, and deploys all images simultaneously — saving days of manual work.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="glass rounded-full px-2.5 py-1 text-slate-400 text-xs">500 SKU Batch</span>
+            <span class="glass rounded-full px-2.5 py-1 text-slate-400 text-xs">API Access</span>
+          </div>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="reveal stagger-5 feature-card glass rounded-2xl p-6 border border-white/5">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-yellow-600/20 border border-amber-500/20 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+            </svg>
+          </div>
+          <h3 class="text-white font-semibold text-lg mb-2">Amazon TOS Guard</h3>
+          <p class="text-slate-400 text-sm leading-relaxed">Built-in compliance scanner flags violations before upload — restricted claims, watermarks, prohibited overlays — zero account risk.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="glass-orange rounded-full px-2.5 py-1 text-brand-300 text-xs">Auto-Scan</span>
+            <span class="glass rounded-full px-2.5 py-1 text-slate-400 text-xs">Real-time Alerts</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════ HOW IT WORKS ═══════════════════════════════════ -->
+  <section id="how-it-works" class="py-24 px-6 bg-dark-800/20">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="reveal inline-flex items-center gap-2 glass-orange rounded-full px-4 py-2 mb-5">
+          <span class="text-brand-300 text-xs font-medium badge-pill uppercase tracking-widest">Simple Process</span>
+        </div>
+        <h2 class="reveal stagger-1 text-4xl sm:text-5xl font-black text-white">From Upload to <span class="gradient-text">Ranking</span></h2>
+        <p class="reveal stagger-2 mt-4 text-slate-400 max-w-xl mx-auto">Three steps between you and images that dominate your category.</p>
+      </div>
+
+      <div class="relative">
+        <!-- Connecting line -->
+        <div class="hidden md:block absolute top-12 left-1/6 right-1/6 h-px bg-gradient-to-r from-transparent via-brand-500/40 to-transparent"></div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+
+          <div class="reveal text-center">
+            <div class="relative inline-block mb-6">
+              <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-500/20 to-brand-600/30 border border-brand-500/30 flex items-center justify-center mx-auto animate-float">
+                <svg class="w-9 h-9 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                </svg>
+              </div>
+              <div class="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-xs font-bold shadow-lg">1</div>
+            </div>
+            <h3 class="text-white font-semibold text-lg mb-2">Upload Your Product</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">Drop in your raw product photos or ASIN. ImageForge ingests everything automatically.</p>
+          </div>
+
+          <div class="reveal stagger-1 text-center">
+            <div class="relative inline-block mb-6">
+              <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-600/30 border border-blue-500/30 flex items-center justify-center mx-auto animate-float" style="animation-delay:-2s">
+                <svg class="w-9 h-9 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"/>
+                </svg>
+              </div>
+              <div class="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xs font-bold shadow-lg">2</div>
+            </div>
+            <h3 class="text-white font-semibold text-lg mb-2">AI Generates &amp; Optimises</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">Our models create, resize, and TOS-check your full 7-image pack in under 2 minutes.</p>
+          </div>
+
+          <div class="reveal stagger-2 text-center">
+            <div class="relative inline-block mb-6">
+              <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-green-600/30 border border-emerald-500/30 flex items-center justify-center mx-auto animate-float" style="animation-delay:-4s">
+                <svg class="w-9 h-9 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/>
+                </svg>
+              </div>
+              <div class="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center text-white text-xs font-bold shadow-lg">3</div>
+            </div>
+            <h3 class="text-white font-semibold text-lg mb-2">Watch Revenue Climb</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">Images go live instantly via CDN. Monitor CTR and conversion lifts in real-time from your dashboard.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════ TESTIMONIALS ═══════════════════════════════════ -->
+  <section id="testimonials" class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="reveal inline-flex items-center gap-2 glass-orange rounded-full px-4 py-2 mb-5">
+          <span class="text-brand-300 text-xs font-medium badge-pill uppercase tracking-widest">Real Results</span>
+        </div>
+        <h2 class="reveal stagger-1 text-4xl sm:text-5xl font-black text-white">Sellers Are <span class="gradient-text">Obsessed</span></h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5">
+
+        <div class="reveal feature-card glass rounded-2xl p-6 border border-white/5">
+          <div class="flex gap-1 mb-4">
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed mb-5">"We switched to ImageForge 3 months ago. Our main listing's CTR went from 4.2% to 6.8% — that's an extra $34K in monthly revenue on one ASIN alone."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-sm font-bold">M</div>
+            <div>
+              <p class="text-white text-sm font-semibold">Marcus T.</p>
+              <p class="text-slate-500 text-xs">FBA Seller · $2M/yr</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal stagger-1 feature-card glass rounded-2xl p-6 border border-white/5 md:-mt-4 price-popular">
+          <div class="flex gap-1 mb-4">
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed mb-5">"The TOS compliance guard alone saved my account. Competitors got suspended, my listings stayed up and grabbed their traffic. Absolute no-brainer investment."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-sm font-bold">S</div>
+            <div>
+              <p class="text-white text-sm font-semibold">Sarah K.</p>
+              <p class="text-slate-500 text-xs">Private Label · 47 ASINs</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal stagger-2 feature-card glass rounded-2xl p-6 border border-white/5">
+          <div class="flex gap-1 mb-4">
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed mb-5">"We manage 200+ clients. ImageForge's bulk API cut our image production time by 90%. What used to take a designer 3 days now runs overnight automatically."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-sm font-bold">R</div>
+            <div>
+              <p class="text-white text-sm font-semibold">Ryan L.</p>
+              <p class="text-slate-500 text-xs">Amazon Agency · 200+ Clients</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════ PRICING ═══════════════════════════════════ -->
+  <section id="pricing" class="py-24 px-6 bg-dark-800/20">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="reveal inline-flex items-center gap-2 glass-orange rounded-full px-4 py-2 mb-5">
+          <span class="text-brand-300 text-xs font-medium badge-pill uppercase tracking-widest">Transparent Pricing</span>
+        </div>
+        <h2 class="reveal stagger-1 text-4xl sm:text-5xl font-black text-white">Invest Less Than One</h2>
+        <h2 class="reveal stagger-2 text-4xl sm:text-5xl font-black gradient-text">Sale to Win Thousands</h2>
+        <p class="reveal stagger-3 mt-4 text-slate-400 max-w-lg mx-auto">Every plan pays for itself in the first week. Pick the one that matches your catalogue size.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <!-- Starter -->
+        <div class="reveal feature-card glass rounded-2xl p-7 border border-white/5 flex flex-col">
+          <div class="mb-6">
+            <p class="text-slate-400 text-sm font-medium mb-1">Starter</p>
+            <div class="flex items-end gap-1">
+              <span class="text-5xl font-black text-white">$49</span>
+              <span class="text-slate-400 text-sm pb-1">/mo</span>
+            </div>
+            <p class="text-slate-500 text-xs mt-1">Up to 25 active ASINs</p>
+          </div>
+          <ul class="space-y-3 mb-8 flex-1">
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>AI image generation (500 renders/mo)</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>CDN delivery (50 GB bandwidth)</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>TOS compliance scanner</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Basic analytics</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-400 opacity-50"><svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 20 20" stroke="currentColor"><circle cx="10" cy="10" r="8" stroke-width="1.5"/><path stroke-linecap="round" d="M7 13l6-6M7 7l6 6" stroke-width="1.5"/></svg>A/B testing</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-400 opacity-50"><svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 20 20" stroke="currentColor"><circle cx="10" cy="10" r="8" stroke-width="1.5"/><path stroke-linecap="round" d="M7 13l6-6M7 7l6 6" stroke-width="1.5"/></svg>Bulk processing API</li>
+          </ul>
+          <a href="#" class="block text-center glass border border-white/10 hover:border-brand-500/40 text-white font-semibold py-3 rounded-xl transition-all hover:bg-brand-500/10">Start Free Trial</a>
+        </div>
+
+        <!-- Growth — popular -->
+        <div class="reveal stagger-1 feature-card price-popular rounded-2xl p-7 border flex flex-col relative">
+          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2">
+            <span class="bg-gradient-to-r from-brand-500 to-brand-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">MOST POPULAR</span>
+          </div>
+          <div class="mb-6">
+            <p class="text-brand-400 text-sm font-medium mb-1">Growth</p>
+            <div class="flex items-end gap-1">
+              <span class="text-5xl font-black text-white">$149</span>
+              <span class="text-slate-400 text-sm pb-1">/mo</span>
+            </div>
+            <p class="text-slate-500 text-xs mt-1">Up to 150 active ASINs</p>
+          </div>
+          <ul class="space-y-3 mb-8 flex-1">
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>AI image generation (3,000 renders/mo)</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>CDN delivery (500 GB bandwidth)</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>TOS compliance scanner</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Advanced analytics + A/B testing</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Automated infographic packs</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Priority support (4hr response)</li>
+          </ul>
+          <a href="#" class="block text-center btn-glow text-white font-bold py-3 rounded-xl">Start Free Trial</a>
+        </div>
+
+        <!-- Agency -->
+        <div class="reveal stagger-2 feature-card glass rounded-2xl p-7 border border-white/5 flex flex-col">
+          <div class="mb-6">
+            <p class="text-slate-400 text-sm font-medium mb-1">Agency</p>
+            <div class="flex items-end gap-1">
+              <span class="text-5xl font-black text-white">$399</span>
+              <span class="text-slate-400 text-sm pb-1">/mo</span>
+            </div>
+            <p class="text-slate-500 text-xs mt-1">Unlimited ASINs + white-label</p>
+          </div>
+          <ul class="space-y-3 mb-8 flex-1">
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Unlimited AI renders</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Unlimited CDN bandwidth</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>White-label dashboard</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Full API access + webhooks</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Dedicated account manager</li>
+            <li class="flex items-start gap-2.5 text-sm text-slate-300"><svg class="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>SLA + 1hr support response</li>
+          </ul>
+          <a href="#" class="block text-center glass border border-white/10 hover:border-brand-500/40 text-white font-semibold py-3 rounded-xl transition-all hover:bg-brand-500/10">Contact Sales</a>
+        </div>
+
+      </div>
+
+      <p class="reveal text-center text-slate-500 text-sm mt-8">All plans include 7-day free trial · No credit card required · Cancel anytime</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════ CTA ═══════════════════════════════════ -->
+  <section class="py-24 px-6">
+    <div class="max-w-3xl mx-auto text-center">
+      <div class="reveal glass-orange rounded-3xl p-12 relative overflow-hidden">
+        <!-- Background glow -->
+        <div class="absolute inset-0 bg-gradient-to-br from-brand-500/10 via-transparent to-brand-700/10"></div>
+        <div class="orb w-64 h-64 bg-brand-400 opacity-10 -top-16 -right-16 animate-float"></div>
+
+        <div class="relative z-10">
+          <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+            <span class="text-green-400 text-xs font-medium">Live — 4,200+ sellers growing right now</span>
+          </div>
+          <h2 class="text-4xl sm:text-5xl font-black text-white mb-4">Your Competitors<br/><span class="gradient-text">Are Already Here.</span></h2>
+          <p class="text-slate-400 text-lg mb-8 max-w-lg mx-auto">Every day your listings run on weak images is revenue left on the table. Start your free trial and see results in 48 hours.</p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#" class="btn-glow text-white font-bold text-base px-8 py-4 rounded-2xl flex items-center justify-center gap-2">
+              Start Free — No Card Needed
+              <svg class="w-4 h-4 animate-bounce-x" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+              </svg>
+            </a>
+            <a href="#" class="glass text-white font-semibold text-base px-8 py-4 rounded-2xl hover:border-white/20 transition-colors">
+              Book a Demo
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════ FOOTER ═══════════════════════════════════ -->
+  <footer class="border-t border-white/5 py-12 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid md:grid-cols-4 gap-8 mb-10">
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="2" width="9" height="9" rx="2" fill="white" opacity="0.9"/>
+                <rect x="13" y="2" width="9" height="9" rx="2" fill="white" opacity="0.6"/>
+                <rect x="2" y="13" width="9" height="9" rx="2" fill="white" opacity="0.6"/>
+                <rect x="13" y="13" width="9" height="9" rx="2" fill="white" opacity="0.9"/>
+              </svg>
+            </div>
+            <span class="font-bold text-white">ImageForge<span class="text-brand-500">.</span></span>
+          </div>
+          <p class="text-slate-500 text-sm leading-relaxed">The AI image server built for Amazon sellers who want to dominate their category.</p>
+        </div>
+        <div>
+          <p class="text-white font-semibold text-sm mb-4">Product</p>
+          <ul class="space-y-2 text-slate-500 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors">Features</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Pricing</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">API Docs</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Changelog</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-white font-semibold text-sm mb-4">Company</p>
+          <ul class="space-y-2 text-slate-500 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors">About</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-white font-semibold text-sm mb-4">Legal</p>
+          <ul class="space-y-2 text-slate-500 text-sm">
+            <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Cookie Policy</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Security</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-slate-600 text-xs">© 2026 ImageForge Inc. All rights reserved.</p>
+        <div class="flex items-center gap-4 text-slate-600 text-xs">
+          <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>All systems operational</span>
+          <span>SOC 2 Type II</span>
+          <span>GDPR Compliant</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════ JS ═══════════════════════════════════ -->
+  <script>
+    // ── Scroll Reveal ──────────────────────────────────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+    // ── Animated Counters ──────────────────────────────────────────────────────
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        const target = parseFloat(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        const isDecimal = el.dataset.decimal === 'true';
+        const duration = 2000;
+        const startTime = performance.now();
+        const prefix = el.dataset.prefix || '';
+
+        function update(now) {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const value = isDecimal
+            ? (eased * target).toFixed(1)
+            : Math.floor(eased * target).toLocaleString();
+          el.textContent = prefix + value + suffix;
+          if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+        counterObserver.unobserve(el);
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.counter-num').forEach(el => counterObserver.observe(el));
+
+    // ── Nav active link ────────────────────────────────────────────────────────
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav a[href^="#"]');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 120) current = s.id;
+      });
+      navLinks.forEach(link => {
+        link.classList.toggle('text-white', link.getAttribute('href') === '#' + current);
+        link.classList.toggle('text-slate-400', link.getAttribute('href') !== '#' + current);
+      });
+    }, { passive: true });
+
+    // ── Smooth parallax orbs on mouse move ────────────────────────────────────
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 30;
+      const y = (e.clientY / window.innerHeight - 0.5) * 30;
+      document.querySelectorAll('.orb').forEach((orb, i) => {
+        const factor = (i % 3 + 1) * 0.4;
+        orb.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+      });
+    });
+  </script>
+</body>
+</html>
