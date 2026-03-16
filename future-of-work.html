@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Future of Work</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================
+   CSS CUSTOM PROPERTIES — CREATIVE VOLTAGE
+   =========================================== */
+:root {
+    --blue:       #0055ee;
+    --blue-dark:  #0040cc;
+    --blue-deep:  #001a66;
+    --neon:       #d4ff00;
+    --dark:       #08080f;
+    --dark-mid:   #0f0f1e;
+    --dark-panel: #0a0a18;
+    --white:      #ffffff;
+    --dim:        rgba(255,255,255,0.35);
+    --dimmer:     rgba(255,255,255,0.12);
+
+    --font-display: 'Syne', sans-serif;
+    --font-mono:    'Space Mono', monospace;
+
+    --title-size:  clamp(1.5rem, 5vw, 4rem);
+    --h2-size:     clamp(1.25rem, 3.5vw, 2.8rem);
+    --body-size:   clamp(0.7rem, 1.3vw, 1rem);
+    --small-size:  clamp(0.55rem, 0.9vw, 0.72rem);
+    --slide-pad:   clamp(1.5rem, 5vw, 5rem);
+    --gap:         clamp(0.5rem, 1.5vw, 1.5rem);
+    --ease-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===========================================
+   VIEWPORT BASE — MANDATORY
+   =========================================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow-x: hidden; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+body { background: var(--dark); }
+
+.slide {
+    width: 100vw; height: 100vh; height: 100dvh;
+    overflow: hidden;
+    scroll-snap-align: start;
+    display: flex; flex-direction: column;
+    position: relative;
+}
+.slide-content {
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; max-height: 100%; overflow: hidden;
+    padding: var(--slide-pad);
+}
+img, .image-container {
+    max-width: 100%; max-height: min(50vh, 400px); object-fit: contain;
+}
+
+@media (max-height: 700px) {
+    :root { --slide-pad: clamp(0.75rem, 3vw, 2rem); --h2-size: clamp(1rem, 3vw, 1.75rem); }
+}
+@media (max-height: 600px) {
+    :root { --slide-pad: clamp(0.5rem, 2.5vw, 1.5rem); --body-size: clamp(0.65rem, 1.1vw, 0.85rem); }
+    .nav-dots { display: none; }
+}
+@media (max-height: 500px) {
+    :root { --slide-pad: clamp(0.4rem, 2vw, 1rem); --h2-size: clamp(0.9rem, 2.5vw, 1.3rem); }
+}
+@media (max-width: 600px) {
+    .split { grid-template-columns: 1fr !important; }
+    .stats-grid { grid-template-columns: 1fr 1fr !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+    html { scroll-behavior: auto; }
+}
+
+/* ===========================================
+   SHARED COMPONENTS
+   =========================================== */
+
+/* Halftone dot pattern overlay */
+.halftone {
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1.5px, transparent 1.5px);
+    background-size: 20px 20px;
+}
+
+/* Grid line overlay */
+.gridlines {
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 44px 44px;
+}
+
+/* Neon badge pill */
+.badge {
+    display: inline-flex; align-items: center; gap: 0.4em;
+    background: var(--neon); color: var(--dark);
+    font-family: var(--font-mono); font-size: var(--small-size); font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.35em 0.85em; border-radius: 2px;
+    width: fit-content;
+}
+.badge::before { content: '◆'; font-size: 0.65em; }
+
+/* Section eyebrow */
+.eyebrow {
+    font-family: var(--font-mono); font-size: var(--small-size);
+    color: rgba(212,255,0,0.6); letter-spacing: 0.22em; text-transform: uppercase;
+}
+
+/* Reveal animation */
+.reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
+}
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+.slide.visible .reveal:nth-child(1) { transition-delay: 0.05s; }
+.slide.visible .reveal:nth-child(2) { transition-delay: 0.15s; }
+.slide.visible .reveal:nth-child(3) { transition-delay: 0.25s; }
+.slide.visible .reveal:nth-child(4) { transition-delay: 0.35s; }
+.slide.visible .reveal:nth-child(5) { transition-delay: 0.45s; }
+.slide.visible .reveal:nth-child(6) { transition-delay: 0.55s; }
+.slide.visible .reveal:nth-child(7) { transition-delay: 0.65s; }
+
+.reveal-left {
+    opacity: 0; transform: translateX(-30px);
+    transition: opacity 0.7s var(--ease-expo), transform 0.7s var(--ease-expo);
+}
+.slide.visible .reveal-left { opacity: 1; transform: translateX(0); }
+.slide.visible .reveal-left:nth-child(1) { transition-delay: 0.05s; }
+.slide.visible .reveal-left:nth-child(2) { transition-delay: 0.18s; }
+.slide.visible .reveal-left:nth-child(3) { transition-delay: 0.31s; }
+.slide.visible .reveal-left:nth-child(4) { transition-delay: 0.44s; }
+
+/* Progress bar */
+.progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--neon), var(--blue));
+    width: 0%; transition: width 0.3s ease; z-index: 1000;
+}
+
+/* Nav dots */
+.nav-dots {
+    position: fixed; right: clamp(1rem, 2vw, 1.75rem); top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 0.55rem; z-index: 999;
+}
+.nav-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.18); cursor: pointer;
+    transition: all 0.3s ease; border: none; padding: 0;
+}
+.nav-dot.active { background: var(--neon); transform: scale(1.5); }
+.nav-dot:hover { background: rgba(255,255,255,0.5); }
+
+/* ===========================================
+   SLIDE 1 — TITLE  (split: blue | dark)
+   =========================================== */
+.s1 { flex-direction: row; }
+
+.s1-left {
+    width: 48%; background: var(--blue);
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: var(--slide-pad); position: relative; overflow: hidden; z-index: 1;
+}
+.s1-left .halftone { opacity: 0.9; }
+
+.s1-big-year {
+    font-family: var(--font-mono); font-size: clamp(5rem, 14vw, 14rem);
+    font-weight: 700; color: rgba(255,255,255,0.06);
+    line-height: 1; position: absolute;
+    bottom: clamp(1rem, 2.5vw, 3rem); left: var(--slide-pad);
+    z-index: 0; pointer-events: none;
+}
+
+.s1-left-top { z-index: 1; }
+.s1-left-bottom { z-index: 1; }
+
+.s1-left h1 {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(2.5rem, 7vw, 6.5rem);
+    color: var(--white); line-height: 0.92; letter-spacing: -0.02em;
+}
+.s1-left h1 em { font-style: normal; color: var(--neon); display: block; }
+
+.s1-right {
+    width: 52%; background: var(--dark-mid);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: var(--slide-pad); position: relative; overflow: hidden;
+}
+.s1-right .gridlines {}
+
+.s1-topics { display: flex; flex-direction: column; gap: var(--gap); z-index: 1; }
+
+.s1-topic {
+    display: flex; gap: 1rem; align-items: flex-start;
+    border-left: 2px solid rgba(255,255,255,0.08);
+    padding-left: clamp(0.75rem, 1.5vw, 1.25rem);
+    transition: border-color 0.3s;
+}
+.s1-topic:first-child { border-color: var(--neon); }
+.s1-topic:hover { border-color: rgba(212,255,0,0.5); }
+
+.s1-topic-num {
+    font-family: var(--font-mono); font-size: var(--small-size);
+    color: rgba(212,255,0,0.5); min-width: 2em; margin-top: 0.15em;
+}
+.s1-topic-title {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(0.9rem, 1.8vw, 1.35rem); color: var(--white);
+}
+.s1-topic-sub {
+    font-family: var(--font-mono); font-size: var(--small-size);
+    color: var(--dim); margin-top: 0.2em; line-height: 1.4;
+}
+
+.s1-footer {
+    position: absolute; bottom: var(--slide-pad); right: var(--slide-pad);
+    font-family: var(--font-mono); font-size: var(--small-size);
+    color: var(--dimmer); letter-spacing: 0.15em; z-index: 1;
+}
+
+/* ===========================================
+   SLIDE 2 — LANDSCAPE (full dark + stat cards)
+   =========================================== */
+.s2 { background: var(--dark-mid); }
+.s2 .gridlines {}
+
+.s2-inner {
+    z-index: 1; padding: var(--slide-pad); height: 100%;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 5rem); align-items: center;
+}
+
+.s2-left { display: flex; flex-direction: column; gap: var(--gap); }
+
+.s2-left h2 {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(2rem, 5.5vw, 5rem); color: var(--white);
+    line-height: 0.93; letter-spacing: -0.02em;
+}
+.s2-left h2 em { font-style: normal; color: var(--neon); }
+
+.s2-left p {
+    font-family: var(--font-mono); font-size: var(--body-size);
+    color: var(--dim); line-height: 1.7; max-width: 36ch;
+    margin-top: clamp(0.25rem, 0.75vh, 0.75rem);
+}
+
+.stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(0.6rem, 1.2vw, 1.2rem);
+}
+
+.stat-card {
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(0,85,238,0.08);
+    padding: clamp(0.9rem, 2vw, 1.6rem); border-radius: 3px;
+    display: flex; flex-direction: column; gap: 0.3em;
+    transition: border-color 0.3s, background 0.3s;
+}
+.stat-card:hover { border-color: rgba(212,255,0,0.3); background: rgba(0,85,238,0.15); }
+
+.stat-num {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(1.6rem, 4vw, 3.2rem); color: var(--neon); line-height: 1;
+}
+.stat-label {
+    font-family: var(--font-mono); font-size: var(--small-size);
+    color: var(--dim); line-height: 1.45;
+}
+
+/* ===========================================
+   SLIDE 3 — AI & AUTOMATION (split panel)
+   =========================================== */
+.s3 { flex-direction: row; }
+
+.s3-left {
+    width: 40%; background: var(--blue);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: var(--slide-pad); position: relative; overflow: hidden;
+}
+.s3-left .halftone {}
+
+.s3-big-num {
+    font-family: var(--font-mono); font-size: clamp(6rem, 16vw, 16rem);
+    font-weight: 700; color: rgba(255,255,255,0.08);
+    line-height: 1; position: absolute; top: clamp(1rem, 2vw, 2.5rem); left: var(--slide-pad);
+    pointer-events: none; z-index: 0;
+}
+.s3-left-content { z-index: 1; }
+.s3-left-content h2 {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(1.5rem, 4vw, 3.5rem); color: var(--white); line-height: 0.95;
+}
+.s3-left-content h2 em { font-style: normal; color: var(--neon); display: block; }
+.s3-left-content p {
+    font-family: var(--font-mono); font-size: var(--small-size);
+    color: rgba(255,255,255,0.65); line-height: 1.6; max-width: 28ch;
+    margin-top: clamp(0.5rem, 1vh, 1rem);
+}
+
+.s3-right {
+    width: 60%; background: var(--dark-panel);
+    display: flex; align-items: center;
+    padding: var(--slide-pad); position: relative; overflow: hidden;
+}
+.s3-right .gridlines {}
+
+.s3-cols {
+    z-index: 1; display: grid; grid-template-columns: 1fr 1px 1fr;
+    gap: clamp(1.5rem, 3vw, 3rem); width: 100%;
+}
+
+.s3-divider {
+    background: linear-gradient(to bottom, transparent, rgba(212,255,0,0.25), transparent);
+    height: 100%; min-height: clamp(10rem, 25vh, 22rem);
+}
+
+.col-label {
+    font-family: var(--font-mono); font-size: var(--small-size);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: clamp(0.6rem, 1.5vh, 1.2rem);
+}
+.col-label.transform { color: rgba(212,255,0,0.7); }
+.col-label.rise { color: rgba(0,180,255,0.7); }
+
+.ai-list { list-style: none; display: flex; flex-direction: column; gap: clamp(0.45rem, 1vh, 0.9rem); }
+.ai-list li {
+    font-family: var(--font-mono); font-size: var(--body-size);
+    color: var(--dim); line-height: 1.45; padding-left: 1.2em; position: relative;
+}
+.ai-list li::before { content: '—'; position: absolute; left: 0; color: rgba(212,255,0,0.35); }
+
+/* ===========================================
+   SLIDE 4 — REMOTE REVOLUTION
+   =========================================== */
+.s4 { background: var(--dark); }
+.s4-stripe {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: clamp(4px, 0.6vw, 6px); background: var(--blue); z-index: 1;
+}
+
+.s4-inner {
+    z-index: 1; padding: var(--slide-pad);
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 5rem); align-items: center; height: 100%;
+}
+
+.s4-left { display: flex; flex-direction: column; gap: var(--gap); }
+.s4-left h2 {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(2rem, 5.5vw, 5rem); color: var(--white); line-height: 0.93;
+    letter-spacing: -0.02em;
+}
+.s4-left h2 em { font-style: normal; color: var(--blue); }
+.s4-left p {
+    font-family: var(--font-mono); font-size: var(--body-size);
+    color: var(--dim); line-height: 1.7; max-width: 34ch;
+    margin-top: clamp(0.25rem, 0.75vh, 0.75rem);
+}
+
+.s4-points { display: flex; flex-direction: column; gap: clamp(0.65rem, 1.5vh, 1.4rem); }
+
+.s4-point {
+    display: flex; gap: clamp(0.75rem, 1.5vw, 1.25rem); align-items: flex-start;
+    padding: clamp(0.65rem, 1.3vw, 1.1rem) clamp(0.75rem, 1.5vw, 1.25rem);
+    border-left: 2px solid rgba(255,255,255,0.07);
+    transition: border-color 0.3s, background 0.3s; border-radius: 0 3px 3px 0;
+}
+.s4-point:hover { border-color: var(--blue); background: rgba(0,85,238,0.07); }
+
+.s4-icon { font-size: clamp(1rem, 2vw, 1.4rem); flex-shrink: 0; margin-top: 0.1em; }
+.s4-point h4 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(0.85rem, 1.5vw, 1.15rem); color: var(--white); margin-bottom: 0.2em;
+}
+.s4-point p {
+    font-family: var(--font-mono); font-size: var(--small-size);
+    color: var(--dim); line-height: 1.5; margin: 0; max-width: none;
+}
+
+/* ===========================================
+   SLIDE 5 — NEW CAREER MODELS
+   =========================================== */
+.s5 { background: var(--dark-mid); }
+
+.s5-inner {
+    z-index: 1; padding: var(--slide-pad); height: 100%;
+    display: flex; flex-direction: column; justify-content: center;
+    gap: var(--gap);
+}
+.s5-header { display: flex; flex-direction: column; gap: 0.4em; }
+.s5-header h2 {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: var(--h2-size); color: var(--white); letter-spacing: -0.02em;
+}
+.s5-header h2 em { font-style: normal; color: var(--neon); }
+
+.careers-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.6rem, 1.2vw, 1.1rem); max-width: min(90vw, 1000px);
+}
+
+.career-card {
+    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(0,0,0,0.3);
+    padding: clamp(0.85rem, 1.75vw, 1.5rem); border-radius: 3px;
+    display: flex; flex-direction: column; gap: 0.4em;
+    transition: border-color 0.35s, transform 0.35s var(--ease-expo), background 0.35s;
+}
+.career-card:hover {
+    border-color: var(--neon); transform: translateY(-3px);
+    background: rgba(0,85,238,0.1);
+}
+.career-icon { font-size: clamp(1.1rem, 2.2vw, 1.6rem); }
+.career-card h3 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(0.9rem, 1.7vw, 1.25rem); color: var(--white); line-height: 1.15;
+}
+.career-card p {
+    font-family: var(--font-mono); font-size: var(--small-size);
+    color: var(--dim); line-height: 1.5;
+}
+
+/* ===========================================
+   SLIDE 6 — THE HUMAN EDGE (quote)
+   =========================================== */
+.s6 { background: var(--blue); align-items: center; justify-content: center; }
+.s6 .halftone {}
+
+.s6-inner {
+    z-index: 1; text-align: center; max-width: min(80vw, 750px);
+    padding: var(--slide-pad);
+    display: flex; flex-direction: column; align-items: center; gap: var(--gap);
+}
+
+.s6-inner blockquote {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.6rem, 4.5vw, 4rem); color: var(--white);
+    line-height: 1.15; letter-spacing: -0.015em;
+}
+.s6-inner blockquote strong { color: var(--neon); font-weight: 800; }
+
+.s6-rule {
+    height: 2px; width: clamp(3rem, 8vw, 6rem);
+    background: rgba(212,255,0,0.5); margin: clamp(0.5rem, 1vh, 1rem) auto;
+}
+
+.s6-pillars { display: flex; gap: clamp(1rem, 2.5vw, 2.5rem); flex-wrap: wrap; justify-content: center; }
+.pillar {
+    font-family: var(--font-mono); font-size: var(--small-size);
+    color: rgba(255,255,255,0.55); letter-spacing: 0.2em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 0.5em;
+}
+.pillar::before {
+    content: ''; display: inline-block; width: 5px; height: 5px;
+    border-radius: 50%; background: var(--neon); opacity: 0.7;
+}
+
+/* ===========================================
+   SLIDE 7 — 2030 OUTLOOK (split)
+   =========================================== */
+.s7 { flex-direction: row; }
+
+.s7-left {
+    width: 42%; background: var(--dark-panel);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: var(--slide-pad); position: relative; overflow: hidden;
+    border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+.s7-big {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(5rem, 13vw, 13rem); line-height: 1;
+    color: rgba(0,85,238,0.25); letter-spacing: -0.04em;
+    position: absolute; bottom: clamp(1rem, 2vw, 2.5rem); left: var(--slide-pad);
+    pointer-events: none; z-index: 0;
+}
+
+.s7-left-content { z-index: 1; display: flex; flex-direction: column; gap: var(--gap); }
+.s7-left-content h2 {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(1.5rem, 4vw, 3.5rem); color: var(--white); line-height: 0.95;
+}
+.s7-left-content h2 em { font-style: normal; color: var(--neon); display: block; }
+.s7-left-content p {
+    font-family: var(--font-mono); font-size: var(--body-size);
+    color: var(--dim); line-height: 1.7; max-width: 32ch;
+}
+
+.s7-right {
+    width: 58%; background: var(--dark-mid);
+    display: flex; align-items: center;
+    padding: var(--slide-pad); position: relative; overflow: hidden;
+}
+.s7-right .gridlines {}
+
+.timeline { z-index: 1; display: flex; flex-direction: column; gap: clamp(0.8rem, 1.8vh, 1.8rem); width: 100%; }
+
+.tl-item { display: flex; gap: clamp(0.75rem, 1.5vw, 1.25rem); align-items: flex-start; }
+
+.tl-marker { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+.tl-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--neon); margin-top: 0.3em; flex-shrink: 0;
+}
+.tl-line { width: 1px; background: rgba(212,255,0,0.15); flex: 1; min-height: clamp(1rem, 2.5vh, 2.5rem); }
+
+.tl-text h4 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(0.9rem, 1.6vw, 1.2rem); color: var(--white); margin-bottom: 0.2em;
+}
+.tl-text p {
+    font-family: var(--font-mono); font-size: var(--small-size);
+    color: var(--dim); line-height: 1.5;
+}
+
+/* ===========================================
+   SLIDE 8 — CLOSING (blue full + neon)
+   =========================================== */
+.s8 { background: var(--blue); align-items: center; justify-content: center; }
+.s8 .halftone {}
+
+.s8-inner {
+    z-index: 1; text-align: center;
+    max-width: min(80vw, 750px); padding: var(--slide-pad);
+    display: flex; flex-direction: column; align-items: center; gap: var(--gap);
+}
+
+.s8-inner h2 {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(3rem, 9vw, 8rem); color: var(--white); line-height: 0.9;
+    letter-spacing: -0.03em;
+}
+.s8-inner h2 em { font-style: normal; color: var(--neon); }
+
+.s8-rule {
+    height: 2px; width: clamp(3rem, 8vw, 6rem);
+    background: rgba(212,255,0,0.5); margin: clamp(0.5rem, 1vh, 1rem) auto;
+}
+
+.takeaways { display: flex; flex-direction: column; gap: clamp(0.35rem, 0.9vh, 0.85rem); text-align: left; width: 100%; max-width: 44ch; }
+.takeaway { display: flex; gap: 0.7rem; align-items: flex-start; }
+.tk-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--neon); flex-shrink: 0; margin-top: 0.45em; }
+.takeaway p {
+    font-family: var(--font-mono); font-size: var(--body-size);
+    color: rgba(255,255,255,0.7); line-height: 1.5;
+}
+
+.s8-footer {
+    position: absolute; bottom: var(--slide-pad); left: 0; right: 0;
+    text-align: center; z-index: 1;
+    font-family: var(--font-mono); font-size: var(--small-size);
+    color: rgba(255,255,255,0.25); letter-spacing: 0.2em; text-transform: uppercase;
+}
+
+/* Floating keyframe */
+@keyframes floatY {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<nav class="nav-dots" id="navDots" aria-label="Slide navigation"></nav>
+
+<!-- ==========================================
+     SLIDE 1 — TITLE
+     ========================================== -->
+<section class="slide s1" aria-label="Title">
+    <div class="s1-left">
+        <div class="halftone"></div>
+        <div class="s1-big-year">2030</div>
+        <div class="s1-left-top">
+            <div class="badge reveal">Teaching Presentation</div>
+        </div>
+        <div class="s1-left-bottom">
+            <h1 class="reveal">The<br>Future<br>of <em>Work</em></h1>
+        </div>
+    </div>
+    <div class="s1-right">
+        <div class="gridlines"></div>
+        <div class="s1-topics">
+            <div class="s1-topic reveal-left">
+                <div class="s1-topic-num">01</div>
+                <div><div class="s1-topic-title">AI &amp; Automation</div><div class="s1-topic-sub">Which jobs transform, which evolve</div></div>
+            </div>
+            <div class="s1-topic reveal-left">
+                <div class="s1-topic-num">02</div>
+                <div><div class="s1-topic-title">Remote Revolution</div><div class="s1-topic-sub">Geography of talent goes global</div></div>
+            </div>
+            <div class="s1-topic reveal-left">
+                <div class="s1-topic-num">03</div>
+                <div><div class="s1-topic-title">New Career Models</div><div class="s1-topic-sub">Skills over degrees, portfolios over resumes</div></div>
+            </div>
+            <div class="s1-topic reveal-left">
+                <div class="s1-topic-num">04</div>
+                <div><div class="s1-topic-title">The Human Edge</div><div class="s1-topic-sub">What AI can never replace</div></div>
+            </div>
+        </div>
+        <div class="s1-footer">↑ ↓ Navigate · 8 Slides</div>
+    </div>
+</section>
+
+<!-- ==========================================
+     SLIDE 2 — LANDSCAPE IS SHIFTING
+     ========================================== -->
+<section class="slide s2" aria-label="The landscape is shifting">
+    <div class="gridlines"></div>
+    <div class="s2-inner">
+        <div class="s2-left">
+            <div class="eyebrow reveal">01 — Context</div>
+            <h2 class="reveal">The Landscape<br>Is <em>Shifting</em></h2>
+            <p class="reveal">Work is undergoing its most profound transformation since the Industrial Revolution. Three forces converge: AI capability, distributed connectivity, and shifting expectations.</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card reveal">
+                <div class="stat-num">85M</div>
+                <div class="stat-label">Jobs displaced by automation by 2030 (WEF)</div>
+            </div>
+            <div class="stat-card reveal">
+                <div class="stat-num">97M</div>
+                <div class="stat-label">New roles created in the same period</div>
+            </div>
+            <div class="stat-card reveal">
+                <div class="stat-num">32%</div>
+                <div class="stat-label">Of workers now fully remote or hybrid globally</div>
+            </div>
+            <div class="stat-card reveal">
+                <div class="stat-num">50%</div>
+                <div class="stat-label">Of employees will need reskilling by 2025</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     SLIDE 3 — AI & AUTOMATION
+     ========================================== -->
+<section class="slide s3" aria-label="AI and automation">
+    <div class="s3-left">
+        <div class="halftone"></div>
+        <div class="s3-big-num">02</div>
+        <div class="s3-left-content">
+            <div class="badge reveal" style="margin-bottom: clamp(0.5rem,1.5vh,1.5rem);">Transformation</div>
+            <h2 class="reveal">AI &amp;<br><em>Automation</em></h2>
+            <p class="reveal">Not replacement — reinvention. Every industry is being restructured around human-machine collaboration.</p>
+        </div>
+    </div>
+    <div class="s3-right">
+        <div class="gridlines"></div>
+        <div class="s3-cols">
+            <div class="s3-col">
+                <div class="col-label transform reveal">Jobs that transform</div>
+                <ul class="ai-list">
+                    <li class="reveal">Accounting → strategic analysis</li>
+                    <li class="reveal">Legal research → AI case strategy</li>
+                    <li class="reveal">Medical diagnosis → AI-augmented physicians</li>
+                    <li class="reveal">Content creation → AI curation</li>
+                    <li class="reveal">Customer service → complex empathy roles</li>
+                </ul>
+            </div>
+            <div class="s3-divider"></div>
+            <div class="s3-col">
+                <div class="col-label rise reveal">New roles rising</div>
+                <ul class="ai-list">
+                    <li class="reveal">AI Trainers &amp; Prompt Engineers</li>
+                    <li class="reveal">Data Ethicists &amp; Governance leads</li>
+                    <li class="reveal">Human-Machine Teaming specialists</li>
+                    <li class="reveal">Climate Transition strategists</li>
+                    <li class="reveal">Digital Experience designers</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     SLIDE 4 — REMOTE REVOLUTION
+     ========================================== -->
+<section class="slide s4" aria-label="Remote revolution">
+    <div class="s4-stripe"></div>
+    <div class="s4-inner">
+        <div class="s4-left">
+            <div class="eyebrow reveal">03 — Location</div>
+            <h2 class="reveal">The Remote<br><em>Revolution</em></h2>
+            <p class="reveal">Geography is no longer a limit. Talent is global, async work is normal, and the office is optional — not mandatory.</p>
+        </div>
+        <div class="s4-points">
+            <div class="s4-point reveal">
+                <div class="s4-icon">🌍</div>
+                <div><h4>Global Talent Markets</h4><p>Companies hire anywhere; workers earn globally competitive salaries regardless of location.</p></div>
+            </div>
+            <div class="s4-point reveal">
+                <div class="s4-icon">⏱</div>
+                <div><h4>Async-First Culture</h4><p>Deep work replaces meeting culture. Outcomes matter more than face time.</p></div>
+            </div>
+            <div class="s4-point reveal">
+                <div class="s4-icon">🏙</div>
+                <div><h4>Digital Nomad Economy</h4><p>35M+ digital nomads worldwide by 2030 — cities compete to attract mobile workers.</p></div>
+            </div>
+            <div class="s4-point reveal">
+                <div class="s4-icon">🤝</div>
+                <div><h4>Hybrid as the Default</h4><p>Offices become collaboration spaces, not daily destinations. Choice drives retention.</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     SLIDE 5 — NEW CAREER MODELS
+     ========================================== -->
+<section class="slide s5" aria-label="New career models">
+    <div class="s5-inner">
+        <div class="s5-header">
+            <div class="eyebrow reveal">04 — Careers</div>
+            <h2 class="reveal">New Career <em>Models</em></h2>
+        </div>
+        <div class="careers-grid">
+            <div class="career-card reveal">
+                <div class="career-icon">🧠</div>
+                <h3>Skills Over Degrees</h3>
+                <p>Micro-credentials and bootcamps gain parity with traditional degrees. Demonstrable ability wins.</p>
+            </div>
+            <div class="career-card reveal">
+                <div class="career-icon">📁</div>
+                <h3>Portfolio Careers</h3>
+                <p>Multiple income streams combine into a single career identity — not a distraction.</p>
+            </div>
+            <div class="career-card reveal">
+                <div class="career-icon">🔄</div>
+                <h3>Continuous Reskilling</h3>
+                <p>Learning is lifelong. The half-life of skills shrinks to under 5 years.</p>
+            </div>
+            <div class="career-card reveal">
+                <div class="career-icon">🎯</div>
+                <h3>Niche Mastery</h3>
+                <p>Deep specialisation in narrow domains beats broad generalism in an AI-augmented market.</p>
+            </div>
+            <div class="career-card reveal">
+                <div class="career-icon">🌐</div>
+                <h3>Creator Economy</h3>
+                <p>Knowledge workers monetise expertise directly — courses, consulting, content.</p>
+            </div>
+            <div class="career-card reveal">
+                <div class="career-icon">⚡</div>
+                <h3>Fractional Work</h3>
+                <p>Companies hire fractional CFOs, CMOs, and CTOs rather than full-time executives.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     SLIDE 6 — THE HUMAN EDGE
+     ========================================== -->
+<section class="slide s6" aria-label="The human edge">
+    <div class="halftone"></div>
+    <div class="s6-inner">
+        <div class="badge reveal">05 — Resilience</div>
+        <blockquote class="reveal">
+            "AI won't replace you.<br>But someone using <strong>AI</strong> will."
+        </blockquote>
+        <div class="s6-rule reveal"></div>
+        <div class="s6-pillars reveal">
+            <div class="pillar">Empathy</div>
+            <div class="pillar">Creativity</div>
+            <div class="pillar">Judgment</div>
+            <div class="pillar">Trust</div>
+            <div class="pillar">Leadership</div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     SLIDE 7 — 2030 OUTLOOK
+     ========================================== -->
+<section class="slide s7" aria-label="2030 outlook">
+    <div class="s7-left">
+        <div class="s7-big">2030</div>
+        <div class="s7-left-content">
+            <div class="badge reveal">06 — Outlook</div>
+            <h2 class="reveal">What to<br><em>Expect</em></h2>
+            <p class="reveal">The future of work belongs to those who prepare for it today.</p>
+        </div>
+    </div>
+    <div class="s7-right">
+        <div class="gridlines"></div>
+        <div class="timeline">
+            <div class="tl-item reveal">
+                <div class="tl-marker"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                <div class="tl-text"><h4>AI co-pilots in every role</h4><p>Every knowledge worker will have an AI assistant handling routine cognitive tasks.</p></div>
+            </div>
+            <div class="tl-item reveal">
+                <div class="tl-marker"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                <div class="tl-text"><h4>4-day workweek goes mainstream</h4><p>Productivity gains from AI compress working hours. Pilot data from 2024–2026 accelerates adoption.</p></div>
+            </div>
+            <div class="tl-item reveal">
+                <div class="tl-marker"><div class="tl-dot"></div><div class="tl-line"></div></div>
+                <div class="tl-text"><h4>Skills passports replace CVs</h4><p>Verified, portable skill credentials become the universal currency of the job market.</p></div>
+            </div>
+            <div class="tl-item reveal">
+                <div class="tl-marker"><div class="tl-dot"></div></div>
+                <div class="tl-text"><h4>Climate careers surge</h4><p>Decarbonisation creates 24 million new jobs. Green skills command a significant wage premium.</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     SLIDE 8 — CLOSING
+     ========================================== -->
+<section class="slide s8" aria-label="Closing">
+    <div class="halftone"></div>
+    <div class="s8-inner">
+        <div class="badge reveal">Key Takeaways</div>
+        <h2 class="reveal">Adapt.<br><em>Thrive.</em></h2>
+        <div class="s8-rule reveal"></div>
+        <div class="takeaways reveal">
+            <div class="takeaway"><div class="tk-dot"></div><p>AI augments most roles — focus on skills machines can't replicate.</p></div>
+            <div class="takeaway"><div class="tk-dot"></div><p>Remote work is permanent — build skills for async, global collaboration.</p></div>
+            <div class="takeaway"><div class="tk-dot"></div><p>The career ladder gives way to the career portfolio — diversify intentionally.</p></div>
+            <div class="takeaway"><div class="tk-dot"></div><p>Learning never stops — invest in it as a continuous, strategic activity.</p></div>
+        </div>
+    </div>
+    <div class="s8-footer">The Future of Work · 2026</div>
+</section>
+
+<script>
+/* === SLIDE PRESENTATION CONTROLLER === */
+class SlidePresentation {
+    constructor() {
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.currentIndex = 0;
+        this.isScrolling = false;
+        this.init();
+    }
+    init() {
+        this.setupIO();
+        this.setupProgress();
+        this.setupDots();
+        this.setupKeyboard();
+        this.setupTouch();
+        this.setupWheel();
+    }
+    setupIO() {
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    this.currentIndex = this.slides.indexOf(e.target);
+                    this.updateProgress();
+                    this.updateDots();
+                }
+            });
+        }, { threshold: 0.5 });
+        this.slides.forEach(s => io.observe(s));
+    }
+    setupProgress() {
+        this.progressEl = document.getElementById('progressBar');
+    }
+    updateProgress() {
+        const pct = this.slides.length > 1 ? (this.currentIndex / (this.slides.length - 1)) * 100 : 0;
+        if (this.progressEl) this.progressEl.style.width = pct + '%';
+    }
+    setupDots() {
+        const nav = document.getElementById('navDots');
+        if (!nav) return;
+        this.slides.forEach((_, i) => {
+            const b = document.createElement('button');
+            b.className = 'nav-dot' + (i === 0 ? ' active' : '');
+            b.setAttribute('aria-label', `Slide ${i + 1}`);
+            b.addEventListener('click', () => this.goTo(i));
+            nav.appendChild(b);
+        });
+        this.dots = Array.from(nav.querySelectorAll('.nav-dot'));
+    }
+    updateDots() {
+        if (!this.dots) return;
+        this.dots.forEach((d, i) => d.classList.toggle('active', i === this.currentIndex));
+    }
+    setupKeyboard() {
+        document.addEventListener('keydown', e => {
+            if (['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)) { e.preventDefault(); this.next(); }
+            else if (['ArrowUp','ArrowLeft','PageUp'].includes(e.key)) { e.preventDefault(); this.prev(); }
+            else if (e.key === 'Home') { e.preventDefault(); this.goTo(0); }
+            else if (e.key === 'End') { e.preventDefault(); this.goTo(this.slides.length - 1); }
+        });
+    }
+    setupTouch() {
+        let sy = 0;
+        document.addEventListener('touchstart', e => { sy = e.touches[0].clientY; }, { passive: true });
+        document.addEventListener('touchend', e => {
+            const d = sy - e.changedTouches[0].clientY;
+            if (Math.abs(d) > 50) d > 0 ? this.next() : this.prev();
+        }, { passive: true });
+    }
+    setupWheel() {
+        document.addEventListener('wheel', e => {
+            if (this.isScrolling) return;
+            this.isScrolling = true;
+            e.deltaY > 0 ? this.next() : this.prev();
+            setTimeout(() => { this.isScrolling = false; }, 700);
+        }, { passive: true });
+    }
+    goTo(i) {
+        if (i < 0 || i >= this.slides.length) return;
+        this.slides[i].scrollIntoView({ behavior: 'smooth' });
+        this.currentIndex = i; this.updateProgress(); this.updateDots();
+    }
+    next() { this.goTo(this.currentIndex + 1); }
+    prev() { this.goTo(this.currentIndex - 1); }
+}
+document.addEventListener('DOMContentLoaded', () => new SlidePresentation());
+</script>
+</body>
+</html>
