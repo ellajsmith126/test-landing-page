@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beverage Barricade by Avant Grub — Keep Bugs Out, Pop Tabs Easy</title>
+  <meta name="description" content="Reusable snap-on can cover. Blocks bugs, opens cans with half the force, 6 colors to ID your drink. BPA-free, dishwasher safe." />
+  <meta property="og:title" content="Beverage Barricade by Avant Grub — Keep Bugs Out, Pop Tabs Easy" />
+  <meta property="og:description" content="Reusable snap-on can cover. Blocks bugs, opens cans with half the force, 6 colors to ID your drink. BPA-free, dishwasher safe." />
+  <meta property="og:image" content="images/hero-product.jpg" />
+  <meta property="og:type" content="website" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            dark: {
+              900: '#0a0a0f',
+              800: '#12121a',
+              700: '#1a1a26',
+              600: '#22223a',
+              500: '#2e2e4a',
+            }
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    .animate-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+    .nav-scrolled { background: rgba(10,10,15,0.95); backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    @media (prefers-reduced-motion: reduce) {
+      .animate-on-scroll { opacity: 1; transform: none; transition: none; }
+    }
+  </style>
+</head>
+<body class="bg-dark-900 text-white font-sans">
+
+  <!-- Nav -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <span class="text-xl font-extrabold tracking-tight">AVANT GRUB</span>
+      <a href="https://www.amazon.com/dp/B01M07PZ8X" target="_blank" rel="noopener" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-all duration-200 hover:scale-105">Shop on Amazon</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="min-h-screen flex items-center bg-gradient-to-b from-dark-900 to-dark-800 pt-24 pb-16">
+    <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight">Keep Bugs Out. Pop Tabs Easy. <span class="text-orange-500">Know Your Drink.</span></h1>
+        <p class="text-lg text-gray-400 mt-6 max-w-lg">The reusable snap-on can cover that protects your drink, opens with half the force, and comes in 6 colors so you always know which one is yours.</p>
+        <div class="flex items-center gap-2 mt-4 text-orange-400 text-sm font-medium">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          1,000+ bought last month on Amazon
+        </div>
+        <a href="https://www.amazon.com/dp/B01M07PZ8X" target="_blank" rel="noopener" class="inline-block mt-8 bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg px-8 py-4 rounded-full transition-all duration-200 hover:scale-105 shadow-lg shadow-orange-500/25">Shop on Amazon</a>
+      </div>
+      <div class="flex justify-center">
+        <img src="images/hero-product.jpg" alt="Beverage Barricade in 6 colors snapped onto a can" class="rounded-2xl shadow-2xl max-w-sm w-full" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem / Solution -->
+  <section class="bg-dark-800 py-24">
+    <div class="max-w-7xl mx-auto px-6 animate-on-scroll">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center">Three Problems. <span class="text-orange-500">One Clip.</span></h2>
+      <p class="text-gray-400 text-center mt-4 max-w-2xl mx-auto">One tiny accessory. Three big headaches solved.</p>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
+        <!-- Bugs -->
+        <div class="bg-dark-700 rounded-2xl overflow-hidden border-t-4 border-green-500">
+          <img src="images/bug-protection.jpg" alt="Beverage Barricade keeping bugs out of a drink at the beach" class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-green-400">Bugs & Dust?</h3>
+            <p class="text-gray-400 mt-2">Swivel shut. Keep everything out. Your drink stays clean from the first sip to the last.</p>
+          </div>
+        </div>
+        <!-- Hard Tabs -->
+        <div class="bg-dark-700 rounded-2xl overflow-hidden border-t-4 border-orange-500">
+          <img src="images/easy-open.jpg" alt="Opening a can effortlessly with Beverage Barricade" class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-orange-400">Hard Tabs?</h3>
+            <p class="text-gray-400 mt-2">Half the force. No broken nails, no sore fingers. Kids and seniors love it too.</p>
+          </div>
+        </div>
+        <!-- Whose Drink -->
+        <div class="bg-dark-700 rounded-2xl overflow-hidden border-t-4 border-blue-500">
+          <img src="images/identify-drinks.jpg" alt="Friends identifying their drinks by color at a picnic" class="w-full h-48 object-cover" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-blue-400">Whose Drink?</h3>
+            <p class="text-gray-400 mt-2">6 colors. Always know yours. No more mix-ups at parties, tailgates, or cookouts.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="bg-dark-700 py-24">
+    <div class="max-w-7xl mx-auto px-6 animate-on-scroll">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center">Snap. Pop. <span class="text-orange-500">Sip.</span></h2>
+      <div class="grid lg:grid-cols-3 gap-12 mt-16">
+        <div class="text-center lg:text-left">
+          <div class="text-6xl font-black text-orange-500/30">1</div>
+          <h3 class="text-xl font-bold mt-2">Slide It On</h3>
+          <p class="text-gray-400 mt-2">Snap the Barricade onto any standard 6, 8, 12, or 16 oz can tab. It clicks into place in seconds.</p>
+        </div>
+        <div class="text-center lg:text-left relative">
+          <div class="hidden lg:block absolute -left-6 top-8 text-gray-600 text-2xl">→</div>
+          <div class="text-6xl font-black text-orange-500/30">2</div>
+          <h3 class="text-xl font-bold mt-2">Pop the Top</h3>
+          <p class="text-gray-400 mt-2">Lift the lever to open your can with half the effort. No broken nails, no struggle.</p>
+        </div>
+        <div class="text-center lg:text-left relative">
+          <div class="hidden lg:block absolute -left-6 top-8 text-gray-600 text-2xl">→</div>
+          <div class="text-6xl font-black text-orange-500/30">3</div>
+          <h3 class="text-xl font-bold mt-2">Sip & Seal</h3>
+          <p class="text-gray-400 mt-2">Take a sip, then swivel the cover shut. Bugs, dust, and sand stay out between drinks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section class="bg-dark-900 py-24">
+    <div class="max-w-7xl mx-auto px-6 animate-on-scroll">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center">Grab Yours</h2>
+      <div class="grid lg:grid-cols-3 gap-8 mt-16 max-w-4xl mx-auto">
+        <!-- 6-Pack -->
+        <div class="bg-dark-700 rounded-2xl p-8 border border-white/10 hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300">
+          <h3 class="text-lg font-bold text-gray-300">6-Pack</h3>
+          <div class="mt-4"><span class="text-4xl font-bold">$9.99</span></div>
+          <a href="https://www.amazon.com/dp/B01M07PZ8X" target="_blank" rel="noopener" class="block mt-8 text-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-full transition-all duration-200 hover:scale-105">Shop on Amazon</a>
+        </div>
+        <!-- 12-Pack -->
+        <div class="bg-dark-700 rounded-2xl p-8 border-2 border-orange-500 relative hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-500/20 transition-all duration-300 scale-[1.02]">
+          <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-xs font-bold px-4 py-1 rounded-full">Most Popular</span>
+          <h3 class="text-lg font-bold text-gray-300">12-Pack</h3>
+          <div class="mt-4"><span class="text-4xl font-bold">$14.99</span></div>
+          <a href="https://www.amazon.com/dp/B01M07PZ8X" target="_blank" rel="noopener" class="block mt-8 text-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-full transition-all duration-200 hover:scale-105">Shop on Amazon</a>
+        </div>
+        <!-- 36-Pack -->
+        <div class="bg-dark-700 rounded-2xl p-8 border border-white/10 relative hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300">
+          <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-dark-600 text-orange-400 text-xs font-bold px-4 py-1 rounded-full border border-orange-500/30">Best Value</span>
+          <h3 class="text-lg font-bold text-gray-300">36-Pack</h3>
+          <div class="mt-4"><span class="text-4xl font-bold">$24.99</span></div>
+          <a href="https://www.amazon.com/dp/B01M07PZ8X" target="_blank" rel="noopener" class="block mt-8 text-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-full transition-all duration-200 hover:scale-105">Shop on Amazon</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use Cases / Lifestyle -->
+  <section class="bg-dark-800 py-24">
+    <div class="max-w-7xl mx-auto px-6 animate-on-scroll">
+      <h2 class="text-3xl sm:text-4xl font-bold text-center">Use It Anywhere You <span class="text-orange-500">Crack Open a Can</span></h2>
+      <img src="images/lifestyle-grid.jpg" alt="Using Beverage Barricade while golfing, grilling, camping, and fishing" class="rounded-2xl mt-12 w-full shadow-xl" />
+      <div class="flex flex-wrap justify-center gap-3 mt-8">
+        <span class="bg-dark-600 text-gray-300 text-sm px-4 py-2 rounded-full">Picnics</span>
+        <span class="bg-dark-600 text-gray-300 text-sm px-4 py-2 rounded-full">Tailgates</span>
+        <span class="bg-dark-600 text-gray-300 text-sm px-4 py-2 rounded-full">Camping</span>
+        <span class="bg-dark-600 text-gray-300 text-sm px-4 py-2 rounded-full">Beach Days</span>
+        <span class="bg-dark-600 text-gray-300 text-sm px-4 py-2 rounded-full">BBQ</span>
+        <span class="bg-dark-600 text-gray-300 text-sm px-4 py-2 rounded-full">Birthday Parties</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Specs Strip -->
+  <section class="border-y border-white/10 py-12 bg-dark-900">
+    <div class="max-w-7xl mx-auto px-6 flex flex-wrap justify-center gap-8 lg:gap-12">
+      <div class="flex items-center gap-3">
+        <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        <span class="text-sm text-gray-400">Fits 6–16 oz Cans</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <span class="text-sm text-gray-400">BPA-Free</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+        <span class="text-sm text-gray-400">Dishwasher Safe</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+        <span class="text-sm text-gray-400">Food-Grade Polymer</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <span class="text-sm text-gray-400">Reusable</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <svg class="w-6 h-6 text-orange-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        <span class="text-sm text-gray-400">Lifetime Guarantee</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-24 bg-gradient-to-b from-dark-800 to-dark-900 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-orange-600/5"></div>
+    <div class="max-w-4xl mx-auto px-6 text-center relative animate-on-scroll">
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold">Stop Sharing Your Drink <span class="text-orange-500">With Bugs.</span></h2>
+      <p class="text-gray-300 mt-4 text-lg">Available now on Amazon.</p>
+      <a href="https://www.amazon.com/dp/B01M07PZ8X" target="_blank" rel="noopener" class="inline-block mt-8 bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg px-8 py-4 rounded-full transition-all duration-200 hover:scale-105 shadow-lg shadow-orange-500/25">Shop on Amazon</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 border-t border-white/5 py-8">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <span class="text-sm font-bold text-gray-500">AVANT GRUB</span>
+      <span class="text-sm text-gray-600">&copy; 2026 Avant Grub. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+    // Sticky nav
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('nav-scrolled');
+      } else {
+        navbar.classList.remove('nav-scrolled');
+      }
+    });
+  </script>
+</body>
+</html>
